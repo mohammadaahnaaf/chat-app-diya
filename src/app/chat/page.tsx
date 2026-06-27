@@ -61,8 +61,7 @@ export default function ChatPage() {
     setInput("");
     setStreaming(true);
 
-    const assistantMsg: Message = { role: "assistant", content: "" };
-    setMessages([...updatedMessages, assistantMsg]);
+    setMessages([...updatedMessages, { role: "assistant", content: "" }]);
 
     const res = await fetch("/api/chat", {
       method: "POST",
@@ -99,40 +98,51 @@ export default function ChatPage() {
 
   if (!user) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-950">
-        <div className="w-8 h-8 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin" />
+      <div className="min-h-screen flex items-center justify-center bg-parchment">
+        <div className="w-8 h-8 border-4 border-golden border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
 
   return (
-    <div className="flex flex-col h-screen bg-gray-50 dark:bg-gray-950">
+    <div className="flex flex-col h-screen bg-parchment"
+      style={{ backgroundImage: "repeating-linear-gradient(0deg, transparent, transparent 28px, rgba(180,130,40,0.07) 28px, rgba(180,130,40,0.07) 29px)" }}
+    >
       {/* Header */}
-      <header className="flex items-center justify-between px-6 py-4 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 shrink-0">
+      <header className="flex items-center justify-between px-6 py-3 bg-brown-deep border-b-4 border-golden shrink-0">
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-full bg-indigo-600 flex items-center justify-center text-white text-sm font-bold">
+          <div className="w-9 h-9 rounded-sm bg-crimson border-2 border-golden flex items-center justify-center text-parchment text-sm font-bold shadow-[2px_2px_0_#b8860b]">
             {user.name[0].toUpperCase()}
           </div>
           <div>
-            <p className="text-sm font-semibold text-gray-900 dark:text-white">{user.name}</p>
-            <p className="text-xs text-gray-500 dark:text-gray-400">{user.email}</p>
+            <p className="text-sm font-bold text-parchment tracking-wide">{user.name}</p>
+            <p className="text-xs text-parchment-dark">{user.email}</p>
           </div>
         </div>
-        <button
-          onClick={handleLogout}
-          className="text-sm text-gray-500 hover:text-red-500 dark:text-gray-400 dark:hover:text-red-400 transition-colors"
-        >
-          Sign out
-        </button>
+        <div className="flex items-center gap-4">
+          <span className="text-golden text-xs font-bold tracking-widest uppercase hidden sm:block">
+            ✦ Diya Chat ✦
+          </span>
+          <button
+            onClick={handleLogout}
+            className="text-xs text-parchment-dark hover:text-crimson border border-brown-light hover:border-crimson px-3 py-1.5 rounded-sm transition-colors uppercase tracking-wider font-semibold"
+          >
+            Sign Out
+          </button>
+        </div>
       </header>
 
       {/* Messages */}
-      <div className="flex-1 overflow-y-auto px-4 py-6 space-y-4">
+      <div className="flex-1 overflow-y-auto px-4 py-6 space-y-5">
         {messages.length === 0 && (
-          <div className="flex flex-col items-center justify-center h-full text-center gap-3 text-gray-400 dark:text-gray-600">
-            <div className="text-4xl">💬</div>
-            <p className="text-lg font-medium text-gray-600 dark:text-gray-400">Start a conversation</p>
-            <p className="text-sm">Ask me anything — I&apos;m powered by Alibaba Cloud AI.</p>
+          <div className="flex flex-col items-center justify-center h-full text-center gap-3">
+            <div className="text-5xl">✦</div>
+            <p className="text-xl font-bold text-brown-dark tracking-wide" style={{ fontFamily: "Georgia, serif" }}>
+              Start a Conversation
+            </p>
+            <p className="text-sm text-brown-mid max-w-xs">
+              Ask me anything — powered by Alibaba Cloud AI.
+            </p>
           </div>
         )}
         {messages.map((msg, i) => (
@@ -141,15 +151,15 @@ export default function ChatPage() {
             className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}
           >
             {msg.role === "assistant" && (
-              <div className="w-7 h-7 rounded-full bg-indigo-100 dark:bg-indigo-900 flex items-center justify-center text-indigo-600 dark:text-indigo-400 text-xs font-bold mr-2 shrink-0 mt-0.5">
+              <div className="w-8 h-8 rounded-sm bg-golden border-2 border-brown-dark flex items-center justify-center text-brown-deep text-xs font-bold mr-2 shrink-0 mt-0.5 shadow-[1px_1px_0_#1e0d04]">
                 AI
               </div>
             )}
             <div
-              className={`max-w-[75%] rounded-2xl px-4 py-2.5 text-sm ${
+              className={`max-w-[75%] rounded-sm px-4 py-3 text-sm border-2 shadow-[2px_2px_0_#1e0d04] ${
                 msg.role === "user"
-                  ? "bg-indigo-600 text-white rounded-br-sm whitespace-pre-wrap leading-relaxed"
-                  : "bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 shadow-sm rounded-bl-sm"
+                  ? "bg-crimson border-brown-dark text-parchment-light whitespace-pre-wrap leading-relaxed"
+                  : "bg-parchment-light border-golden text-brown-dark"
               }`}
             >
               {msg.role === "user" ? (
@@ -161,6 +171,11 @@ export default function ChatPage() {
                 />
               )}
             </div>
+            {msg.role === "user" && (
+              <div className="w-8 h-8 rounded-sm bg-crimson border-2 border-brown-dark flex items-center justify-center text-parchment-light text-xs font-bold ml-2 shrink-0 mt-0.5 shadow-[1px_1px_0_#1e0d04]">
+                {user.name[0].toUpperCase()}
+              </div>
+            )}
           </div>
         ))}
         <div ref={bottomRef} />
@@ -169,7 +184,7 @@ export default function ChatPage() {
       {/* Input */}
       <form
         onSubmit={handleSubmit}
-        className="shrink-0 px-4 py-4 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800"
+        className="shrink-0 px-4 py-4 bg-brown-deep border-t-4 border-golden"
       >
         <div className="flex items-end gap-3 max-w-3xl mx-auto">
           <textarea
@@ -181,10 +196,10 @@ export default function ChatPage() {
                 handleSubmit(e as unknown as FormEvent);
               }
             }}
-            placeholder="Message AI... (Shift+Enter for newline)"
+            placeholder="Write your message... (Shift+Enter for newline)"
             rows={1}
-            className="flex-1 resize-none rounded-xl border border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 px-4 py-3 text-sm text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 max-h-40 overflow-y-auto"
-            style={{ height: "auto" }}
+            className="flex-1 resize-none rounded-sm border-2 border-brown-light bg-cream px-4 py-3 text-sm text-brown-dark placeholder:text-brown-mid focus:outline-none focus:border-golden max-h-40 overflow-y-auto"
+            style={{ height: "auto", fontFamily: "Georgia, serif" }}
             onInput={(e) => {
               const el = e.currentTarget;
               el.style.height = "auto";
@@ -194,9 +209,9 @@ export default function ChatPage() {
           <button
             type="submit"
             disabled={!input.trim() || streaming}
-            className="shrink-0 rounded-xl bg-indigo-600 hover:bg-indigo-700 disabled:opacity-40 text-white px-5 py-3 text-sm font-semibold transition-colors"
+            className="shrink-0 rounded-sm bg-crimson hover:bg-crimson-dark disabled:opacity-40 text-parchment-light px-5 py-3 text-sm font-bold tracking-widest uppercase transition-colors border-2 border-brown-dark shadow-[2px_2px_0_#b8860b]"
           >
-            {streaming ? "..." : "Send"}
+            {streaming ? "···" : "Send"}
           </button>
         </div>
       </form>
