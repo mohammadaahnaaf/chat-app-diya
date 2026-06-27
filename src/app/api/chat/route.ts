@@ -2,10 +2,12 @@ import OpenAI from "openai";
 import { getSession } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
-const client = new OpenAI({
-  apiKey: process.env.ALIBABA_API_KEY!,
-  baseURL: process.env.ALIBABA_API_BASE!,
-});
+function getClient() {
+  return new OpenAI({
+    apiKey: process.env.ALIBABA_API_KEY!,
+    baseURL: process.env.ALIBABA_API_BASE!,
+  });
+}
 
 export async function POST(req: Request) {
   const user = await getSession();
@@ -29,7 +31,7 @@ export async function POST(req: Request) {
     { role: "user", content: message },
   ];
 
-  const stream = await client.chat.completions.create({
+  const stream = await getClient().chat.completions.create({
     model: process.env.ALIBABA_MODEL ?? "qwen-plus",
     messages,
     stream: true,
